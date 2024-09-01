@@ -1,6 +1,10 @@
 const Product = require('../models/product');
 
-// Crear un nuevo producto
+/**
+ * @desc Crear un nuevo producto
+ * @route POST /api/products
+ * @access Private
+ */
 exports.createProduct = async (req, res) => {
     try {
         const product = new Product(req.body);
@@ -11,7 +15,11 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// Obtener todos los productos
+/**
+ * @desc Obtener todos los productos
+ * @route GET /api/products
+ * @access Public
+ */
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await Product.find();
@@ -21,7 +29,11 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-// Obtener un producto por ID
+/**
+ * @desc Obtener un producto por ID
+ * @route GET /api/products/:id
+ * @access Public
+ */
 exports.getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -34,7 +46,11 @@ exports.getProductById = async (req, res) => {
     }
 };
 
-// Actualizar un producto
+/**
+ * @desc Actualizar un producto
+ * @route PUT /api/products/:id
+ * @access Private
+ */
 exports.updateProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -47,7 +63,11 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-// Eliminar un producto
+/**
+ * @desc Eliminar un producto
+ * @route DELETE /api/products/:id
+ * @access Private
+ */
 exports.deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
