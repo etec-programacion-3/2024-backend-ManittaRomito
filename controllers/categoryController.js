@@ -1,6 +1,10 @@
 const Category = require('../models/category');
 
-// Crear una nueva categoría
+/**
+ * @desc Crear una nueva categoría
+ * @route POST /api/categories
+ * @access Private
+ */
 exports.createCategory = async (req, res) => {
     try {
         const category = new Category(req.body);
@@ -11,7 +15,11 @@ exports.createCategory = async (req, res) => {
     }
 };
 
-// Obtener todas las categorías
+/**
+ * @desc Obtener todas las categorías
+ * @route GET /api/categories
+ * @access Public
+ */
 exports.getAllCategories = async (req, res) => {
     try {
         const categories = await Category.find();
@@ -21,7 +29,11 @@ exports.getAllCategories = async (req, res) => {
     }
 };
 
-// Obtener una categoría por ID
+/**
+ * @desc Obtener una categoría por ID
+ * @route GET /api/categories/:id
+ * @access Public
+ */
 exports.getCategoryById = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
@@ -34,7 +46,11 @@ exports.getCategoryById = async (req, res) => {
     }
 };
 
-// Actualizar una categoría
+/**
+ * @desc Actualizar una categoría
+ * @route PUT /api/categories/:id
+ * @access Private
+ */
 exports.updateCategory = async (req, res) => {
     try {
         const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -47,7 +63,11 @@ exports.updateCategory = async (req, res) => {
     }
 };
 
-// Eliminar una categoría
+/**
+ * @desc Eliminar una categoría
+ * @route DELETE /api/categories/:id
+ * @access Private
+ */
 exports.deleteCategory = async (req, res) => {
     try {
         const category = await Category.findByIdAndDelete(req.params.id);

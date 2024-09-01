@@ -1,41 +1,101 @@
-const User = require('../models/users');
-const bcrypt = require('bcrypt');
+const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-// Registro de usuario
-exports.register = async (req, res) => {
-    const { nombre, email, contraseña } = req.body;
-    try {
-        const hashedPassword = await bcrypt.hash(contraseña, 10);
-        const user = await User.create({ nombre, email, contraseña: hashedPassword });
-        res.status(201).json({ message: 'Usuario registrado exitosamente', user });
-    } catch (error) {
-        res.status(500).json({ message: 'Error al registrar el usuario', error });
-    }
-};
+/**
+ * @desc Registrar un nuevo usuario
+ * @route POST /api/users/register
+ * @access Public
+ */
+exports.registerUser = async (req, res) => {
+    const { name, email, password } = req.body;
 
-// Inicio de sesión de usuario
-exports.login = async (req, res) => {
-    const { email, contraseña } = req.body;
     try {
-        const user = await User.findOne({ where: { email } });
-        if (user && await bcrypt.compare(contraseña, user.contraseña)) {
-            const token = jwt.sign({ userId: user.user_id, role: user.rol }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.status(200).json({ message: 'Inicio de sesión exitoso', token });
-        } else {
-            res.status(401).json({ message: 'Credenciales incorrectas' });
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'El usuario ya existe' });
         }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ name, email, password: hashedPassword });
+
+        await user.save();
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+        });
+
+        res.status(201).json({
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+            },
+            token,
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al iniciar sesión', error });
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Obtener perfil del usuario autenticado
-exports.getProfile = async (req, res) => {
+/**
+ * @desc Autenticar un usuario
+ * @route POST /api/users/login
+ * @access Public
+ */
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
     try {
-        const user = await User.findByPk(req.user.userId);
-        res.status(200).json(user);
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Credenciales inválidas' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Credenciales inválidas' });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+        });
+
+        res.json({
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+            },
+            token,
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener el perfil', error });
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * @desc Obtener información del usuario autenticado
+ * @route GET /api/users/me
+ * @access Private
+ */
+exports.getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        res.json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
