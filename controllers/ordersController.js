@@ -9,11 +9,13 @@ exports.createOrder = async (req, res) => {
     const { items, totalPrice } = req.body;
 
     try {
+        // Crear el pedido
         const order = await Order.create({
             userId: req.user.id,
             totalPrice,
         });
 
+        // Crear los detalles del pedido
         const orderItems = await Promise.all(items.map(async (item) => {
             const product = await Product.findByPk(item.productId);
             if (!product) {

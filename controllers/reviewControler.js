@@ -36,7 +36,10 @@ exports.getReviews = async (req, res) => {
     try {
         const reviews = await Review.findAll({
             where: { productId: req.params.productId },
-            include: 'user',
+            include: {
+                model: User,
+                as: 'user',
+            },
         });
         res.json(reviews);
     } catch (error) {

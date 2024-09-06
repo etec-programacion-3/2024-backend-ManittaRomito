@@ -1,24 +1,52 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} Product
- * @property {number} product_id - Identificador único para cada producto.
- * @property {string} nombre - Nombre del producto.
- * @property {string} descripción - Descripción detallada del producto.
- * @property {number} precio - Precio del producto.
- * @property {number} stock - Cantidad disponible en inventario.
- * @property {string} imagen - URL de la imagen del producto.
- * @property {number} category_id - Identificador de la categoría a la que pertenece el producto.
- */
+const Product = sequelize.define('Product', {
+    product_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    nombre: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    descripción: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    precio: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    },
+    stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    imagen: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    category_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'categories',
+            key: 'category_id'
+        }
+    }
+}, {
+    tableName: 'products',
+    timestamps: false
+});
 
 /**
  * Crear un nuevo producto.
- * @param {Product} product - Datos del producto.
+ * @param {Object} product - Datos del producto.
  * @returns {Promise<void>}
  */
 const createProduct = async (product) => {
-    const query = 'INSERT INTO products SET ?';
-    await connection.execute(query, [product]);
+    await Product.create(product);
 };
 
-module.exports = { createProduct };
+module.exports = { Product, createProduct };

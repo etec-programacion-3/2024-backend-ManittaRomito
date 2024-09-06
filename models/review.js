@@ -1,23 +1,53 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} Review
- * @property {number} review_id - Identificador único para cada reseña.
- * @property {number} product_id - Identificador del producto al que pertenece la reseña.
- * @property {number} user_id - Identificador del usuario que escribió la reseña.
- * @property {number} calificación - Calificación del producto (1-5).
- * @property {string} comentario - Comentario del usuario sobre el producto.
- * @property {Date} fecha - Fecha en que se escribió la reseña.
- */
+const Review = sequelize.define('Review', {
+    review_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    product_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'products',
+            key: 'product_id'
+        }
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'user_id'
+        }
+    },
+    calificación: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    comentario: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    fecha: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+    }
+}, {
+    tableName: 'reviews',
+    timestamps: false
+});
 
 /**
  * Crear una nueva reseña.
- * @param {Review} review - Datos de la reseña.
+ * @param {Object} review - Datos de la reseña.
  * @returns {Promise<void>}
  */
 const createReview = async (review) => {
-    const query = 'INSERT INTO reviews SET ?';
-    await connection.execute(query, [review]);
+    await Review.create(review);
 };
 
-module.exports = { createReview };
+module.exports = { Review, createReview };

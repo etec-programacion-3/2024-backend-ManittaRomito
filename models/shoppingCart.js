@@ -1,20 +1,37 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} ShoppingCart
- * @property {number} cart_id - Identificador único para cada carrito.
- * @property {number} user_id - Identificador del usuario dueño del carrito.
- * @property {Date} fecha_creación - Fecha en que se creó el carrito.
- */
+const ShoppingCart = sequelize.define('ShoppingCart', {
+    cart_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
+    },
+    fecha_creación: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+    }
+}, {
+    tableName: 'shopping_carts',
+    timestamps: false
+});
 
 /**
  * Crear un nuevo carrito de compras.
- * @param {ShoppingCart} cart - Datos del carrito.
+ * @param {Object} cart - Datos del carrito.
  * @returns {Promise<void>}
  */
 const createCart = async (cart) => {
-    const query = 'INSERT INTO shopping_carts SET ?';
-    await connection.execute(query, [cart]);
+    await ShoppingCart.create(cart);
 };
 
-module.exports = { createCart };
+module.exports = { ShoppingCart, createCart };

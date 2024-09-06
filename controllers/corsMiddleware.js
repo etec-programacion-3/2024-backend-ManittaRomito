@@ -1,5 +1,3 @@
-// middlewares/corsMiddleware.js
-
 /**
  * Middleware para habilitar CORS.
  * Configura los encabezados CORS para permitir solicitudes desde cualquier origen.

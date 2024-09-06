@@ -1,6 +1,7 @@
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { User } = require('../models');
+const { JWT_SECRET, JWT_EXPIRES_IN } = require('../config/dotenv');
 
 /**
  * @desc Registrar un nuevo usuario
@@ -11,31 +12,27 @@ exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ where: { email } });
 
         if (existingUser) {
             return res.status(400).json({ message: 'El usuario ya existe' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ name, email, password: hashedPassword });
+        const user = await User.create({ name, email, password: hashedPassword });
 
-        await user.save();
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '1d',
-        });
+        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
         res.status(201).json({
             user: {
-                id: user._id,
+                id: user.id,
                 name: user.name,
                 email: user.email,
             },
             token,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error al registrar usuario', error });
     }
 };
 
@@ -48,32 +45,24 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ where: { email } });
 
-        if (!user) {
-            return res.status(400).json({ message: 'Credenciales inválidas' });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ message: 'Credenciales inválidas' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Credenciales inválidas' });
-        }
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '1d',
-        });
+        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
         res.json({
             user: {
-                id: user._id,
+                id: user.id,
                 name: user.name,
                 email: user.email,
             },
             token,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error al iniciar sesión', error });
     }
 };
 
@@ -84,18 +73,18 @@ exports.loginUser = async (req, res) => {
  */
 exports.getUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findByPk(req.user.id);
 
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
         res.json({
-            id: user._id,
+            id: user.id,
             name: user.name,
             email: user.email,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error al obtener perfil de usuario', error });
     }
 };
