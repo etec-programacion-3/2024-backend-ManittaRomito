@@ -1,8 +1,5 @@
-// middlewares/validateData.js
-
 /**
  * Middleware para validar datos requeridos.
- * Verifica si los campos especificados en el esquema están presentes en el cuerpo de la solicitud.
  * @param {Object} schema - Esquema de validación (usando un validador como Joi, yup, etc.).
  * @returns {Function} Middleware de validación de datos.
  */

@@ -1,25 +1,54 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} User
- * @property {number} user_id - Identificador único para cada usuario.
- * @property {string} nombre - Nombre del usuario.
- * @property {string} email - Dirección de correo electrónico, única.
- * @property {string} contraseña - Contraseña cifrada.
- * @property {string} dirección - Dirección de envío.
- * @property {string} teléfono - Número de contacto.
- * @property {Date} fecha_registro - Fecha en que el usuario se registró.
- * @property {string} rol - Rol del usuario (cliente, administrador).
- */
+const User = sequelize.define('User', {
+    user_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    nombre: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    contraseña: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    dirección: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    teléfono: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    fecha_registro: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+    },
+    rol: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    tableName: 'users',
+    timestamps: false
+});
 
 /**
  * Crear un nuevo usuario.
- * @param {User} user - Datos del usuario.
+ * @param {Object} user - Datos del usuario.
  * @returns {Promise<void>}
  */
 const createUser = async (user) => {
-    const query = 'INSERT INTO users SET ?';
-    await connection.execute(query, [user]);
+    await User.create(user);
 };
 
-module.exports = { createUser };
+module.exports = { User, createUser };

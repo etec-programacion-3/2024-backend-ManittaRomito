@@ -1,21 +1,43 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} OrderDetail
- * @property {number} order_id - Identificador de la orden.
- * @property {number} product_id - Identificador del producto.
- * @property {number} cantidad - Cantidad del producto en la orden.
- * @property {number} precio - Precio del producto al momento de la compra.
- */
+const OrderDetail = sequelize.define('OrderDetail', {
+    order_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'orders',
+            key: 'id'
+        }
+    },
+    product_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'products',
+            key: 'id'
+        }
+    },
+    cantidad: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    precio: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    }
+}, {
+    tableName: 'order_details',
+    timestamps: false
+});
 
 /**
  * Crear un nuevo detalle de orden.
- * @param {OrderDetail} orderDetail - Datos del detalle de la orden.
+ * @param {Object} orderDetail - Datos del detalle de la orden.
  * @returns {Promise<void>}
  */
 const createOrderDetail = async (orderDetail) => {
-    const query = 'INSERT INTO order_details SET ?';
-    await connection.execute(query, [orderDetail]);
+    await OrderDetail.create(orderDetail);
 };
 
-module.exports = { createOrderDetail };
+module.exports = { OrderDetail, createOrderDetail };

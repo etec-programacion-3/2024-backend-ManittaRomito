@@ -1,4 +1,4 @@
-const Category = require('../models/category');
+const { Category } = require('../models/Category');
 
 /**
  * @desc Crear una nueva categoría
@@ -7,8 +7,7 @@ const Category = require('../models/category');
  */
 exports.createCategory = async (req, res) => {
     try {
-        const category = new Category(req.body);
-        await category.save();
+        const category = await Category.create(req.body);
         res.status(201).json(category);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -22,7 +21,7 @@ exports.createCategory = async (req, res) => {
  */
 exports.getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.find();
+        const categories = await Category.findAll();
         res.status(200).json(categories);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -36,7 +35,7 @@ exports.getAllCategories = async (req, res) => {
  */
 exports.getCategoryById = async (req, res) => {
     try {
-        const category = await Category.findById(req.params.id);
+        const category = await Category.findByPk(req.params.id);
         if (!category) {
             return res.status(404).json({ error: "Categoría no encontrada" });
         }
@@ -53,11 +52,16 @@ exports.getCategoryById = async (req, res) => {
  */
 exports.updateCategory = async (req, res) => {
     try {
-        const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!category) {
+        const [updated] = await Category.update(req.body, {
+            where: { category_id: req.params.id }
+        });
+
+        if (!updated) {
             return res.status(404).json({ error: "Categoría no encontrada" });
         }
-        res.status(200).json(category);
+
+        const updatedCategory = await Category.findByPk(req.params.id);
+        res.status(200).json(updatedCategory);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -70,10 +74,12 @@ exports.updateCategory = async (req, res) => {
  */
 exports.deleteCategory = async (req, res) => {
     try {
-        const category = await Category.findByIdAndDelete(req.params.id);
-        if (!category) {
+        const deleted = await Category.destroy({ where: { category_id: req.params.id } });
+
+        if (!deleted) {
             return res.status(404).json({ error: "Categoría no encontrada" });
         }
+
         res.status(200).json({ message: "Categoría eliminada" });
     } catch (error) {
         res.status(400).json({ error: error.message });

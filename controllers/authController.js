@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { JWT_SECRET, JWT_EXPIRES_IN } = require('../config/dotenv');
-const { createUser } = require('../models/User');
+const { User } = require('../models/User');
 
 /**
  * Registrar un nuevo usuario.
@@ -15,8 +15,8 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(contraseña, 10);
 
     try {
-        // Crear usuario
-        await createUser({ nombre, email, contraseña: hashedPassword, rol: 'cliente' });
+        // Crear usuario usando Sequelize
+        await User.create({ nombre, email, contraseña: hashedPassword, rol: 'cliente' });
         res.status(201).json({ message: 'Usuario registrado exitosamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar usuario', error });
@@ -32,9 +32,8 @@ const login = async (req, res) => {
     const { email, contraseña } = req.body;
 
     try {
-        // Obtener el usuario de la base de datos
-        const [rows] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
-        const user = rows[0];
+        // Obtener el usuario desde la base de datos usando Sequelize
+        const user = await User.findOne({ where: { email } });
 
         if (!user || !(await bcrypt.compare(contraseña, user.contraseña))) {
             return res.status(401).json({ message: 'Credenciales inválidas' });

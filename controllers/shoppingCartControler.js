@@ -25,7 +25,7 @@ exports.getCart = async (req, res) => {
 
         res.json(cart);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error al obtener carrito', error });
     }
 };
 
@@ -61,7 +61,7 @@ exports.addToCart = async (req, res) => {
 
         res.status(201).json(cartItem);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error al agregar producto al carrito', error });
     }
 };
 
@@ -86,6 +86,6 @@ exports.removeFromCart = async (req, res) => {
         await cartItem.destroy();
         res.json({ message: 'Producto eliminado del carrito' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error al eliminar producto del carrito', error });
     }
 };

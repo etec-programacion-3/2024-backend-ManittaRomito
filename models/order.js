@@ -1,22 +1,45 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} Order
- * @property {number} order_id - Identificador único para cada orden.
- * @property {number} user_id - Identificador del usuario que realizó la orden.
- * @property {Date} fecha - Fecha en que se realizó la orden.
- * @property {string} estado - Estado de la orden (pendiente, completada, cancelada).
- * @property {number} total - Total de la orden.
- */
+const Order = sequelize.define('Order', {
+    order_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
+    },
+    fecha: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+    },
+    estado: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    total: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    }
+}, {
+    tableName: 'orders',
+    timestamps: false
+});
 
 /**
  * Crear una nueva orden.
- * @param {Order} order - Datos de la orden.
+ * @param {Object} order - Datos de la orden.
  * @returns {Promise<void>}
  */
 const createOrder = async (order) => {
-    const query = 'INSERT INTO orders SET ?';
-    await connection.execute(query, [order]);
+    await Order.create(order);
 };
 
-module.exports = { createOrder };
+module.exports = { Order, createOrder };

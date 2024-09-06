@@ -1,20 +1,33 @@
-const { connection } = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db').connection;
 
-/**
- * @typedef {Object} Category
- * @property {number} category_id - Identificador único para cada categoría.
- * @property {string} nombre - Nombre de la categoría.
- * @property {string} descripción - Descripción de la categoría.
- */
+const Category = sequelize.define('Category', {
+    category_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    nombre: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    descripción: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    }
+}, {
+    tableName: 'categories',
+    timestamps: false
+});
 
 /**
  * Crear una nueva categoría.
- * @param {Category} category - Datos de la categoría.
+ * @param {Object} category - Datos de la categoría.
  * @returns {Promise<void>}
  */
 const createCategory = async (category) => {
-    const query = 'INSERT INTO categories SET ?';
-    await connection.execute(query, [category]);
+    await Category.create(category);
 };
 
-module.exports = { createCategory };
+module.exports = { Category, createCategory };
+
