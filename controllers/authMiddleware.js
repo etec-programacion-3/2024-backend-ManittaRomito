@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config/dotenv');
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config/dotenv.js';
 
 /**
  * Middleware para verificar el token JWT.
@@ -7,7 +7,7 @@ const { JWT_SECRET } = require('../config/dotenv');
  * @param {Response} res - Respuesta HTTP.
  * @param {Function} next - Siguiente middleware.
  */
-const protect = (req, res, next) => {
+export const protect = (req, res, next) => {
     const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
 
     if (!token) {
@@ -22,5 +22,3 @@ const protect = (req, res, next) => {
         res.status(401).json({ message: 'Token no válido' });
     }
 };
-
-module.exports = { protect };

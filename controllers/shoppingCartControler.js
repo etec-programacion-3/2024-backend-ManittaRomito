@@ -1,11 +1,11 @@
-const { ShoppingCart, CartItem, Product } = require('../models');
+import { ShoppingCart, CartItem, Product } from '../models';
 
 /**
  * @desc Obtiene el carrito de compras del usuario
  * @route GET /api/cart
  * @access Private
  */
-exports.getCart = async (req, res) => {
+export const getCart = async (req, res) => {
     try {
         const cart = await ShoppingCart.findOne({
             where: { userId: req.user.id },
@@ -34,7 +34,7 @@ exports.getCart = async (req, res) => {
  * @route POST /api/cart
  * @access Private
  */
-exports.addToCart = async (req, res) => {
+export const addToCart = async (req, res) => {
     const { productId, quantity } = req.body;
 
     try {
@@ -70,7 +70,7 @@ exports.addToCart = async (req, res) => {
  * @route DELETE /api/cart/:id
  * @access Private
  */
-exports.removeFromCart = async (req, res) => {
+export const removeFromCart = async (req, res) => {
     try {
         const cartItem = await CartItem.findOne({
             where: {

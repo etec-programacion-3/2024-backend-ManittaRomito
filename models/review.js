@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/db').connection;
+import { Sequelize, DataTypes } from 'sequelize';
+import { connection as sequelize } from '../config/db.js';
 
 const Review = sequelize.define('Review', {
     review_id: {
@@ -50,4 +50,4 @@ const createReview = async (review) => {
     await Review.create(review);
 };
 
-module.exports = { Review, createReview };
+export { Review, createReview };

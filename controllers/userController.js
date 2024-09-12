@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const { User } = require('../models');
-const { JWT_SECRET, JWT_EXPIRES_IN } = require('../config/dotenv');
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { User } from '../models';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/dotenv';
 
 /**
  * @desc Registrar un nuevo usuario
  * @route POST /api/users/register
  * @access Public
  */
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
@@ -41,7 +41,7 @@ exports.registerUser = async (req, res) => {
  * @route POST /api/users/login
  * @access Public
  */
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -71,7 +71,7 @@ exports.loginUser = async (req, res) => {
  * @route GET /api/users/me
  * @access Private
  */
-exports.getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
     try {
         const user = await User.findByPk(req.user.id);
 

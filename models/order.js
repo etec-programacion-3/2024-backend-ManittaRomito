@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/db').connection;
+import { Sequelize, DataTypes } from 'sequelize';
+import { connection as sequelize } from '../config/db.js';
 
 const Order = sequelize.define('Order', {
     order_id: {
@@ -38,8 +38,8 @@ const Order = sequelize.define('Order', {
  * @param {Object} order - Datos de la orden.
  * @returns {Promise<void>}
  */
-const createOrder = async (order) => {
+export const createOrder = async (order) => {
     await Order.create(order);
 };
 
-module.exports = { Order, createOrder };
+export { Order };

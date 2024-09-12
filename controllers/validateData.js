@@ -3,7 +3,7 @@
  * @param {Object} schema - Esquema de validación (usando un validador como Joi, yup, etc.).
  * @returns {Function} Middleware de validación de datos.
  */
-function validateData(schema) {
+export function validateData(schema) {
     return (req, res, next) => {
         const { error } = schema.validate(req.body);
         if (error) {
@@ -12,5 +12,3 @@ function validateData(schema) {
         next();
     };
 }
-
-module.exports = { validateData };

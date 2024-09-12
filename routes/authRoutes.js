@@ -3,11 +3,11 @@
  * @description Rutas relacionadas con la autenticación de usuarios.
  */
 
-const express = require('express');
-const { loginUser, registerUser, getUserProfile } = require('../controllers/authController');
-const { authMiddleware } = require('../middlewares/authMiddleware');
-const { validateData } = require('../middlewares/validateData');
-const { loginSchema, registerSchema } = require('../validators/authValidators');
+import express from 'express';
+import { loginUser, registerUser, getUserProfile } from '../controllers/authController.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { validateData } from '../middlewares/validateData.js';
+import { loginSchema, registerSchema } from '../validators/authValidators.js';
 
 const router = express.Router();
 
@@ -40,4 +40,4 @@ router.post('/login', validateData(loginSchema), loginUser);
  */
 router.get('/profile', authMiddleware, getUserProfile);
 
-module.exports = router;
+export default router;
