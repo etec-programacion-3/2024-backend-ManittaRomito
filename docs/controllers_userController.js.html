@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/userController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/userController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { User } from '../models';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/dotenv';
+
+/**
+ * @desc Registrar un nuevo usuario
+ * @route POST /api/users/register
+ * @access Public
+ */
+export const registerUser = async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ where: { email } });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'El usuario ya existe' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({ name, email, password: hashedPassword });
+
+        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+        res.status(201).json({
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+            },
+            token,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al registrar usuario', error });
+    }
+};
+
+/**
+ * @desc Autenticar un usuario
+ * @route POST /api/users/login
+ * @access Public
+ */
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ where: { email } });
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ message: 'Credenciales inválidas' });
+        }
+
+        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+        res.json({
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+            },
+            token,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al iniciar sesión', error });
+    }
+};
+
+/**
+ * @desc Obtener información del usuario autenticado
+ * @route GET /api/users/me
+ * @access Private
+ */
+export const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        res.json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener perfil de usuario', error });
+    }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-dotenv.html">dotenv</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectDB">connectDB</a></li><li><a href="global.html#corsMiddleware">corsMiddleware</a></li><li><a href="global.html#createCart">createCart</a></li><li><a href="global.html#createCartItem">createCartItem</a></li><li><a href="global.html#createCategory">createCategory</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#createOrderDetail">createOrderDetail</a></li><li><a href="global.html#createProduct">createProduct</a></li><li><a href="global.html#createReview">createReview</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#getAllCategories">getAllCategories</a></li><li><a href="global.html#getAllProducts">getAllProducts</a></li><li><a href="global.html#getCategoryById">getCategoryById</a></li><li><a href="global.html#getProductById">getProductById</a></li><li><a href="global.html#getReviews">getReviews</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#protect">protect</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#requestLogger">requestLogger</a></li><li><a href="global.html#sequelize">sequelize</a></li><li><a href="global.html#updateOrderStatus">updateOrderStatus</a></li><li><a href="global.html#validateData">validateData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Sep 12 2024 21:17:40 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
