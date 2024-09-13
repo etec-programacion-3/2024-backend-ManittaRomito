@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/db').connection;
+import { Sequelize, DataTypes } from 'sequelize';
+import { connection as sequelize } from '../config/db.js';
 
 const CartItem = sequelize.define('CartItem', {
     cart_id: {
@@ -32,8 +32,8 @@ const CartItem = sequelize.define('CartItem', {
  * @param {Object} cartItem - Objeto con los datos del item del carrito.
  * @returns {Promise<void>}
  */
-const createCartItem = async (cartItem) => {
+export const createCartItem = async (cartItem) => {
     await CartItem.create(cartItem);
 };
 
-module.exports = { CartItem, createCartItem };
+export { CartItem };

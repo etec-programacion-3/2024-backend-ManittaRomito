@@ -1,11 +1,11 @@
-const { Category } = require('../models/Category');
+import { Category } from '../models/Category.js';
 
 /**
  * @desc Crear una nueva categoría
  * @route POST /api/categories
  * @access Private
  */
-exports.createCategory = async (req, res) => {
+export const createCategory = async (req, res) => {
     try {
         const category = await Category.create(req.body);
         res.status(201).json(category);
@@ -19,7 +19,7 @@ exports.createCategory = async (req, res) => {
  * @route GET /api/categories
  * @access Public
  */
-exports.getAllCategories = async (req, res) => {
+export const getAllCategories = async (req, res) => {
     try {
         const categories = await Category.findAll();
         res.status(200).json(categories);
@@ -33,7 +33,7 @@ exports.getAllCategories = async (req, res) => {
  * @route GET /api/categories/:id
  * @access Public
  */
-exports.getCategoryById = async (req, res) => {
+export const getCategoryById = async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id);
         if (!category) {
@@ -50,7 +50,7 @@ exports.getCategoryById = async (req, res) => {
  * @route PUT /api/categories/:id
  * @access Private
  */
-exports.updateCategory = async (req, res) => {
+export const updateCategory = async (req, res) => {
     try {
         const [updated] = await Category.update(req.body, {
             where: { category_id: req.params.id }
@@ -72,7 +72,7 @@ exports.updateCategory = async (req, res) => {
  * @route DELETE /api/categories/:id
  * @access Private
  */
-exports.deleteCategory = async (req, res) => {
+export const deleteCategory = async (req, res) => {
     try {
         const deleted = await Category.destroy({ where: { category_id: req.params.id } });
 

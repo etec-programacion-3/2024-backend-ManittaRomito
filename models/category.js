@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/db').connection;
+import { Sequelize, DataTypes } from 'sequelize';
+import { connection as sequelize } from '../config/db.js';
 
 const Category = sequelize.define('Category', {
     category_id: {
@@ -25,9 +25,8 @@ const Category = sequelize.define('Category', {
  * @param {Object} category - Datos de la categoría.
  * @returns {Promise<void>}
  */
-const createCategory = async (category) => {
+export const createCategory = async (category) => {
     await Category.create(category);
 };
 
-module.exports = { Category, createCategory };
-
+export { Category };

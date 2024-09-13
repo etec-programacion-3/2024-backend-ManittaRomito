@@ -1,11 +1,11 @@
-const { Review, Product } = require('../models');
+import { Review, Product, User } from '../models';
 
 /**
  * @desc Crea una nueva reseña para un producto
  * @route POST /api/reviews
  * @access Private
  */
-exports.createReview = async (req, res) => {
+export const createReview = async (req, res) => {
     const { productId, comment, rating } = req.body;
 
     try {
@@ -32,7 +32,7 @@ exports.createReview = async (req, res) => {
  * @route GET /api/reviews/:productId
  * @access Public
  */
-exports.getReviews = async (req, res) => {
+export const getReviews = async (req, res) => {
     try {
         const reviews = await Review.findAll({
             where: { productId: req.params.productId },
@@ -52,7 +52,7 @@ exports.getReviews = async (req, res) => {
  * @route DELETE /api/reviews/:id
  * @access Private
  */
-exports.deleteReview = async (req, res) => {
+export const deleteReview = async (req, res) => {
     try {
         const review = await Review.findByPk(req.params.id);
 

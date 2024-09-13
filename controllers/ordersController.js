@@ -1,21 +1,20 @@
-const { Order, OrderDetail, Product } = require('../models');
+// Cambiar la ruta a '../models/index.js' para ES Modules
+import { Order, OrderDetail, Product } from '../models/index.js';
 
 /**
  * @desc Crea un nuevo pedido
  * @route POST /api/orders
  * @access Private
  */
-exports.createOrder = async (req, res) => {
+export const createOrder = async (req, res) => {
     const { items, totalPrice } = req.body;
 
     try {
-        // Crear el pedido
         const order = await Order.create({
             userId: req.user.id,
             totalPrice,
         });
 
-        // Crear los detalles del pedido
         const orderItems = await Promise.all(items.map(async (item) => {
             const product = await Product.findByPk(item.productId);
             if (!product) {
@@ -40,7 +39,7 @@ exports.createOrder = async (req, res) => {
  * @route GET /api/orders
  * @access Private
  */
-exports.getOrders = async (req, res) => {
+export const getOrders = async (req, res) => {
     try {
         const orders = await Order.findAll({
             where: { userId: req.user.id },
@@ -64,7 +63,7 @@ exports.getOrders = async (req, res) => {
  * @route PUT /api/orders/:id
  * @access Admin
  */
-exports.updateOrderStatus = async (req, res) => {
+export const updateOrderStatus = async (req, res) => {
     const { status } = req.body;
 
     try {

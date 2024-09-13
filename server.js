@@ -2,8 +2,8 @@
  * @fileoverview Punto de entrada para iniciar el servidor.
  */
 
-const app = require('./app');
-const { PORT } = require('./config/dotenv');
+import app from './app.js';
+import { PORT } from './config/dotenv.js';
 
 /**
  * Inicia el servidor en el puerto especificado.

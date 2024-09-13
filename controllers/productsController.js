@@ -1,11 +1,11 @@
-const { Product } = require('../models');
+import { Product } from '../models/index.js';
 
 /**
  * @desc Crear un nuevo producto
  * @route POST /api/products
  * @access Private
  */
-exports.createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
     try {
         const product = await Product.create(req.body);
         res.status(201).json(product);
@@ -19,7 +19,7 @@ exports.createProduct = async (req, res) => {
  * @route GET /api/products
  * @access Public
  */
-exports.getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
     try {
         const products = await Product.findAll();
         res.status(200).json(products);
@@ -33,7 +33,7 @@ exports.getAllProducts = async (req, res) => {
  * @route GET /api/products/:id
  * @access Public
  */
-exports.getProductById = async (req, res) => {
+export const getProductById = async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id);
         if (!product) {
@@ -50,7 +50,7 @@ exports.getProductById = async (req, res) => {
  * @route PUT /api/products/:id
  * @access Private
  */
-exports.updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id);
         if (!product) {
@@ -68,7 +68,7 @@ exports.updateProduct = async (req, res) => {
  * @route DELETE /api/products/:id
  * @access Private
  */
-exports.deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id);
         if (!product) {

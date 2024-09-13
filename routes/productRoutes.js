@@ -3,11 +3,17 @@
  * @description Rutas relacionadas con la gestión de productos.
  */
 
-const express = require('express');
-const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productsController');
-const { authMiddleware } = require('../middlewares/authMiddleware');
-const { validateData } = require('../middlewares/validateData');
-const { productSchema } = require('../validators/productValidators');
+import express from 'express';
+import {
+    getAllProducts,
+    getProductById,
+    createProduct,
+    updateProduct,
+    deleteProduct
+} from '../controllers/productsController.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { validateData } from '../middlewares/validateData.js';
+import { productSchema } from '../validators/productValidators.js';
 
 const router = express.Router();
 
@@ -59,4 +65,4 @@ router.put('/:id', authMiddleware, validateData(productSchema), updateProduct);
  */
 router.delete('/:id', authMiddleware, deleteProduct);
 
-module.exports = router;
+export default router;

@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { JWT_SECRET, JWT_EXPIRES_IN } = require('../config/dotenv');
-const { User } = require('../models/User');
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/dotenv.js';
+import { User } from '../models/User.js';
 
 /**
  * Registrar un nuevo usuario.
  * @param {Request} req - Solicitud HTTP.
  * @param {Response} res - Respuesta HTTP.
  */
-const register = async (req, res) => {
+export const register = async (req, res) => {
     const { nombre, email, contraseña } = req.body;
 
     // Cifrar contraseña
@@ -28,7 +28,7 @@ const register = async (req, res) => {
  * @param {Request} req - Solicitud HTTP.
  * @param {Response} res - Respuesta HTTP.
  */
-const login = async (req, res) => {
+export const login = async (req, res) => {
     const { email, contraseña } = req.body;
 
     try {
@@ -49,5 +49,3 @@ const login = async (req, res) => {
         res.status(500).json({ message: 'Error al iniciar sesión', error });
     }
 };
-
-module.exports = { register, login };

@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/db').connection;
+import { Sequelize, DataTypes } from 'sequelize';
+import { connection as sequelize } from '../config/db.js';
 
 const User = sequelize.define('User', {
     user_id: {
@@ -51,4 +51,4 @@ const createUser = async (user) => {
     await User.create(user);
 };
 
-module.exports = { User, createUser };
+export { User, createUser };

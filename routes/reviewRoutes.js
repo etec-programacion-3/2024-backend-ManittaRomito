@@ -1,20 +1,28 @@
-const express = require('express');
+/**
+ * @file reviewRoutes.js
+ * @description Rutas relacionadas con las reseñas de productos.
+ */
+
+import express from 'express';
+import {
+    getProductReviews,
+    createReview
+} from '../controllers/reviewController.js';
+
 const router = express.Router();
-const reviewController = require('../controllers/reviewController');
 
 /**
  * @route GET /api/reviews/:productId
- * @desc Obtener todas las reseñas de un producto
+ * @description Obtener todas las reseñas de un producto.
  * @access Público
  */
-router.get('/:productId', reviewController.getProductReviews);
+router.get('/:productId', getProductReviews);
 
 /**
  * @route POST /api/reviews
- * @desc Crear una nueva reseña
+ * @description Crear una nueva reseña.
  * @access Privado (Usuario autenticado)
  */
-router.post('/', reviewController.createReview);
+router.post('/', createReview);
 
-module.exports = router;
-
+export default router;

@@ -3,9 +3,16 @@
  * @description Rutas para la gestión de categorías.
  */
 
-const express = require('express');
+import express from 'express';
+import {
+    createCategory,
+    getAllCategories,
+    getCategoryById,
+    updateCategory,
+    deleteCategory
+} from '../controllers/categoryController.js';
+
 const router = express.Router();
-const categoryController = require('../controllers/categoryController');
 
 /**
  * @route POST /api/categories
@@ -14,7 +21,7 @@ const categoryController = require('../controllers/categoryController');
  * @param {Object} req.body - Datos de la nueva categoría.
  * @returns {Object} - Categoría creada.
  */
-router.post('/', categoryController.createCategory);
+router.post('/', createCategory);
 
 /**
  * @route GET /api/categories
@@ -22,7 +29,7 @@ router.post('/', categoryController.createCategory);
  * @access Público
  * @returns {Array} - Lista de categorías.
  */
-router.get('/', categoryController.getAllCategories);
+router.get('/', getAllCategories);
 
 /**
  * @route GET /api/categories/:id
@@ -31,7 +38,7 @@ router.get('/', categoryController.getAllCategories);
  * @param {string} req.params.id - ID de la categoría.
  * @returns {Object} - Datos de la categoría.
  */
-router.get('/:id', categoryController.getCategoryById);
+router.get('/:id', getCategoryById);
 
 /**
  * @route PUT /api/categories/:id
@@ -41,7 +48,7 @@ router.get('/:id', categoryController.getCategoryById);
  * @param {Object} req.body - Nuevos datos de la categoría.
  * @returns {Object} - Categoría actualizada.
  */
-router.put('/:id', categoryController.updateCategory);
+router.put('/:id', updateCategory);
 
 /**
  * @route DELETE /api/categories/:id
@@ -50,6 +57,6 @@ router.put('/:id', categoryController.updateCategory);
  * @param {string} req.params.id - ID de la categoría a eliminar.
  * @returns {Object} - Mensaje de éxito.
  */
-router.delete('/:id', categoryController.deleteCategory);
+router.delete('/:id', deleteCategory);
 
-module.exports = router;
+export default router;

@@ -3,11 +3,11 @@
  * @description Rutas relacionadas con la gestión de órdenes.
  */
 
-const express = require('express');
-const { createOrder, getOrderById, updateOrderStatus, deleteOrder } = require('../controllers/ordersController');
-const { authMiddleware } = require('../middlewares/authMiddleware');
-const { validateData } = require('../middlewares/validateData');
-const { orderSchema } = require('../validators/orderValidators');
+import express from 'express';
+import { createOrder, getOrderById, updateOrderStatus, deleteOrder } from '../controllers/ordersController.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { validateData } from '../middlewares/validateData.js';
+import { orderSchema } from '../validators/orderValidators.js';
 
 const router = express.Router();
 
@@ -52,4 +52,4 @@ router.put('/:id', authMiddleware, validateData(orderSchema), updateOrderStatus)
  */
 router.delete('/:id', authMiddleware, deleteOrder);
 
-module.exports = router;
+export default router;

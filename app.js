@@ -1,20 +1,20 @@
 /**
  * @file app.js
- * @description Archivo principal de configuración de la aplicación Express.
+ * @description Configuración de la aplicación y rutas principales.
  */
 
-const express = require('express');
-const { connectDB } = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const productRoutes = require('./routes/productRoutes');
-const orderRoutes = require('./routes/orderRoutes');
-const userRoutes = require('./routes/userRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
-const cartRoutes = require('./routes/cartRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const { errorHandler } = require('./middlewares/errorHandler');
-const { authMiddleware } = require('./middlewares/authMiddleware');
-const { validateData } = require('./middlewares/validateData');
+import express from 'express';
+import { connectDB } from './config/database.js'; // Supongo que tienes una función connectDB exportada
+import { authMiddleware } from './middlewares/authMiddleware.js';
+import { validateData } from './middlewares/validateData.js';
+import authRoutes from './routes/authRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 
@@ -38,4 +38,4 @@ app.use('/api/reviews', reviewRoutes);
 // Middleware de manejo de errores
 app.use(errorHandler);
 
-module.exports = app;
+export default app;
