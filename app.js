@@ -4,9 +4,9 @@
  */
 
 import express from 'express';
-import { connectDB } from './config/database.js'; // Supongo que tienes una función connectDB exportada
-import { authMiddleware } from './middlewares/authMiddleware.js';
-import { validateData } from './middlewares/validateData.js';
+import { connectDB } from './config/db.js'; // Supongo que tienes una función connectDB exportada
+import { authMiddleware } from './controllers/authMiddleware.js';
+import { validateData } from './controllers/validateData.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -14,7 +14,7 @@ import userRoutes from './routes/userRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
-import { errorHandler } from './middlewares/errorHandler.js';
+import { errorHandler } from './controllers/errorHandler.js';
 
 const app = express();
 
