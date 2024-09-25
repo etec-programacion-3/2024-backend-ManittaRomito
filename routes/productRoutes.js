@@ -11,9 +11,9 @@ import {
     updateProduct,
     deleteProduct
 } from '../controllers/productsController.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
-import { validateData } from '../middlewares/validateData.js';
-import { productSchema } from '../validators/productValidators.js';
+import { authMiddleware } from '../controllers/authMiddleware.js';
+import { validateData } from '../controllers/validateData.js';
+import { productSchema } from '../controllers/productValidators.js';
 
 const router = express.Router();
 

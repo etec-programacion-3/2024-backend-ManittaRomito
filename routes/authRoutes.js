@@ -5,9 +5,9 @@
 
 import express from 'express';
 import { loginUser, registerUser, getUserProfile } from '../controllers/authController.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
-import { validateData } from '../middlewares/validateData.js';
-import { loginSchema, registerSchema } from '../validators/authValidators.js';
+import { authMiddleware } from '../controllers/authMiddleware.js';
+import { validateData } from '../controllers/validateData.js';
+import { loginSchema, registerSchema } from '../controllers/authValidators.js';
 
 const router = express.Router();
 

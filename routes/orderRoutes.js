@@ -5,9 +5,9 @@
 
 import express from 'express';
 import { createOrder, getOrderById, updateOrderStatus, deleteOrder } from '../controllers/ordersController.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
-import { validateData } from '../middlewares/validateData.js';
-import { orderSchema } from '../validators/orderValidators.js';
+import { authMiddleware } from '../controllers/authMiddleware.js';
+import { validateData } from '../controllers/validateData.js';
+import { orderSchema } from '../controllers/orderValidators.js';
 
 const router = express.Router();
 
