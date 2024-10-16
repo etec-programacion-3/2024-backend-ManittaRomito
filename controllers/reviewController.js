@@ -1,4 +1,4 @@
-import { Review, Product, User } from '../models';
+import { Review, Product, User } from '../models/index.js';
 
 /**
  * @desc Crea una nueva reseña para un producto

@@ -1,7 +1,8 @@
 import express from 'express';
-import { registerUser, loginUser, getUserProfile } from '../controllers/userController.js'; // Asegúrate de tener el nombre correcto del controlador
-import { protect } from '../middlewares/authMiddleware.js'; // Middleware para proteger rutas privadas
+import { registerUser, loginUser, getUserProfile } from '../controllers/userController.js';
+import { authMiddleware } from '../controllers/authMiddleware.js'; 
 
+// Crear una instancia del enrutador
 const router = express.Router();
 
 /**
@@ -23,6 +24,6 @@ router.post('/login', loginUser);
  * @desc Obtiene el perfil del usuario autenticado
  * @access Privado
  */
-router.get('/me', protect, getUserProfile);
+router.get('/me', authMiddleware, getUserProfile);
 
 export default router;

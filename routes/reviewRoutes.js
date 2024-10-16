@@ -5,7 +5,7 @@
 
 import express from 'express';
 import {
-    getProductReviews,
+    getReviews,  
     createReview
 } from '../controllers/reviewController.js';
 
@@ -16,7 +16,7 @@ const router = express.Router();
  * @description Obtener todas las reseñas de un producto.
  * @access Público
  */
-router.get('/:productId', getProductReviews);
+router.get('/:productId', getReviews); // Cambiado aquí
 
 /**
  * @route POST /api/reviews

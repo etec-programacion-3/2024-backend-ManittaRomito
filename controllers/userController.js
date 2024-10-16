@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { User } from '../models';
-import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/dotenv';
+import { User } from '../models/index.js'; 
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/dotenv.js';
 
 /**
  * @desc Registrar un nuevo usuario
@@ -12,14 +12,14 @@ export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        const existingUser = await User.findOne({ where: { email } });
+        const existingUser = await Users.findOne({ where: { email } }); // Cambiado a "Users"
 
         if (existingUser) {
             return res.status(400).json({ message: 'El usuario ya existe' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ name, email, password: hashedPassword });
+        const user = await User.create({ name, email, password: hashedPassword }); // Cambiado a "Users"
 
         const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
@@ -45,7 +45,7 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { email } }); // Cambiado a "Users"
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: 'Credenciales inválidas' });
@@ -73,7 +73,7 @@ export const loginUser = async (req, res) => {
  */
 export const getUserProfile = async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByPk(req.user.id); // Cambiado a "Users"
 
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
