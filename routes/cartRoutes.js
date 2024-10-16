@@ -5,7 +5,7 @@
 
 import express from 'express';
 import { getCart, addToCart, removeFromCart } from '../controllers/shoppingCartController.js';
-import { protect } from '../controllers/authMiddleware.js';
+import { authMiddleware } from '../controllers/authMiddleware.js';
 
 const router = express.Router();
 
@@ -14,20 +14,20 @@ const router = express.Router();
  * @desc Obtiene el carrito de compras del usuario
  * @access Privado
  */
-router.get('/', protect, getCart);
+router.get('/', authMiddleware, getCart);
 
 /**
  * @route POST /api/cart
  * @desc Agrega un producto al carrito
  * @access Privado
  */
-router.post('/', protect, addToCart);
+router.post('/', authMiddleware, addToCart);
 
 /**
  * @route DELETE /api/cart/:id
  * @desc Elimina un producto del carrito
  * @access Privado
  */
-router.delete('/:id', protect, removeFromCart);
+router.delete('/:id', authMiddleware, removeFromCart);
 
 export default router;

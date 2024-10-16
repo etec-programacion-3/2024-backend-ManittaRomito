@@ -1,5 +1,4 @@
-// Cambiar la ruta a '../models/index.js' para ES Modules
-import { Order, OrderDetail, Product } from '../models/index.js';
+import { Order, OrderDetail } from '../models/index.js';
 
 /**
  * @desc Crea un nuevo pedido
@@ -74,6 +73,53 @@ export const updateOrderStatus = async (req, res) => {
 
         order.status = status;
         await order.save();
+
+        res.json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * @desc Elimina un pedido
+ * @route DELETE /api/orders/:id
+ * @access Admin
+ */
+export const deleteOrder = async (req, res) => {
+    try {
+        const order = await Order.findByPk(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Pedido no encontrado' });
+        }
+
+        await order.destroy();
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * @desc Obtiene un pedido por ID
+ * @route GET /api/orders/:id
+ * @access Private
+ */
+export const getOrderById = async (req, res) => {
+    try {
+        const order = await Order.findByPk(req.params.id, {
+            include: {
+                model: OrderDetail,
+                as: 'items',
+                include: {
+                    model: Product,
+                    as: 'product',
+                },
+            },
+        });
+
+        if (!order) {
+            return res.status(404).json({ message: 'Pedido no encontrado' });
+        }
 
         res.json(order);
     } catch (error) {

@@ -1,4 +1,4 @@
-import { ShoppingCart, CartItem, Product } from '../models';
+import { ShoppingCart, CartItem, Product } from '../models/index.js';
 
 /**
  * @desc Obtiene el carrito de compras del usuario

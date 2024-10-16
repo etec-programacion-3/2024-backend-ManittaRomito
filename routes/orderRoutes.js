@@ -6,8 +6,6 @@
 import express from 'express';
 import { createOrder, getOrderById, updateOrderStatus, deleteOrder } from '../controllers/ordersController.js';
 import { authMiddleware } from '../controllers/authMiddleware.js';
-import { validateData } from '../controllers/validateData.js';
-import { orderSchema } from '../controllers/orderValidators.js';
 
 const router = express.Router();
 
@@ -19,7 +17,7 @@ const router = express.Router();
  * @returns {Object} - Orden creada.
  * @middleware authMiddleware, validateData(orderSchema)
  */
-router.post('/', authMiddleware, validateData(orderSchema), createOrder);
+router.post('/', authMiddleware, createOrder);
 
 /**
  * @route GET /api/orders/:id
@@ -40,7 +38,7 @@ router.get('/:id', authMiddleware, getOrderById);
  * @returns {Object} - Orden actualizada.
  * @middleware authMiddleware, validateData(orderSchema)
  */
-router.put('/:id', authMiddleware, validateData(orderSchema), updateOrderStatus);
+router.put('/:id', authMiddleware, updateOrderStatus);
 
 /**
  * @route DELETE /api/orders/:id

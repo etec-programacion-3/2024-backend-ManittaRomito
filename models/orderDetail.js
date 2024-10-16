@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from 'sequelize';
-import { connection as sequelize } from '../config/db.js';
+import { sequelize } from '../config/db.js';
 
 const OrderDetail = sequelize.define('OrderDetail', {
     order_id: {

@@ -12,8 +12,7 @@ import {
     deleteProduct
 } from '../controllers/productsController.js';
 import { authMiddleware } from '../controllers/authMiddleware.js';
-import { validateData } from '../controllers/validateData.js';
-import { productSchema } from '../controllers/productValidators.js';
+
 
 const router = express.Router();
 
@@ -42,7 +41,7 @@ router.get('/:id', getProductById);
  * @returns {Object} - Producto creado.
  * @middleware authMiddleware, validateData(productSchema)
  */
-router.post('/', authMiddleware, validateData(productSchema), createProduct);
+router.post('/', authMiddleware, createProduct);
 
 /**
  * @route PUT /api/products/:id
@@ -53,7 +52,7 @@ router.post('/', authMiddleware, validateData(productSchema), createProduct);
  * @returns {Object} - Producto actualizado.
  * @middleware authMiddleware, validateData(productSchema)
  */
-router.put('/:id', authMiddleware, validateData(productSchema), updateProduct);
+router.put('/:id', authMiddleware, updateProduct);
 
 /**
  * @route DELETE /api/products/:id
