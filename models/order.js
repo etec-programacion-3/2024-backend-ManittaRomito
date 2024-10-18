@@ -12,7 +12,7 @@ const Order = sequelize.define('Order', {
         allowNull: false,
         references: {
             model: 'users',
-            key: 'id'
+            key: 'user_id'
         }
     },
     fecha: {
