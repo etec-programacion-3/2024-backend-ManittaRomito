@@ -7,7 +7,7 @@ const OrderDetail = sequelize.define('OrderDetail', {
         allowNull: false,
         references: {
             model: 'orders',
-            key: 'id'
+            key: 'order_id'
         }
     },
     product_id: {
@@ -15,7 +15,7 @@ const OrderDetail = sequelize.define('OrderDetail', {
         allowNull: false,
         references: {
             model: 'products',
-            key: 'id'
+            key: 'product_id'
         }
     },
     cantidad: {

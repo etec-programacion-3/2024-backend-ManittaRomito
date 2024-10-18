@@ -12,7 +12,7 @@ const ShoppingCart = sequelize.define('ShoppingCart', {
         allowNull: false,
         references: {
             model: 'users',
-            key: 'id'
+            key: 'user_id'  // Cambiado de 'id' a 'user_id'
         }
     },
     fecha_creación: {
