@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/dotenv.js';
-import { User } from '../models/index.js'; 
+import { User } from '../models/index.js';
 
 /**
  * Registrar un nuevo usuario.
@@ -10,9 +10,23 @@ import { User } from '../models/index.js';
  */
 const registerUser = async (req, res) => {
     const { nombre, email, contraseña } = req.body;
-    const hashedPassword = await bcrypt.hash(contraseña, 10);
+
+    // Validación de campos obligatorios
+    if (!nombre || !email || !contraseña) {
+        return res.status(400).json({ message: 'Faltan datos obligatorios: nombre, email y contraseña' });
+    }
 
     try {
+        // Verificar si el usuario ya existe
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ message: 'El usuario ya existe' });
+        }
+
+        // Hashear la contraseña
+        const hashedPassword = await bcrypt.hash(contraseña, 10);
+
+        // Crear el nuevo usuario
         await User.create({ nombre, email, contraseña: hashedPassword, rol: 'cliente' });
         res.status(201).json({ message: 'Usuario registrado exitosamente' });
     } catch (error) {
@@ -28,13 +42,20 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, contraseña } = req.body;
 
+    // Validación de campos obligatorios
+    if (!email || !contraseña) {
+        return res.status(400).json({ message: 'Faltan datos obligatorios: email y contraseña' });
+    }
+
     try {
+        // Buscar al usuario por email
         const user = await User.findOne({ where: { email } });
 
         if (!user || !(await bcrypt.compare(contraseña, user.contraseña))) {
             return res.status(401).json({ message: 'Credenciales inválidas' });
         }
 
+        // Generar el token JWT
         const token = jwt.sign({ userId: user.user_id, rol: user.rol }, JWT_SECRET, {
             expiresIn: JWT_EXPIRES_IN
         });
@@ -72,8 +93,9 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+// Exportar las funciones del controlador
 export {
-    registerUser,
-    loginUser,
+    registerUser as register,
+    loginUser as login,
     getUserProfile
 };

@@ -1,0 +1,10 @@
+### Registro de usuario (POST)
+POST http://127.0.0.1:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Test User",
+  "email": "testuser@example.com",
+  "contraseña": "password123",
+  "rol": "Cliente"
+}
