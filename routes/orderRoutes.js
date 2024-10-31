@@ -27,6 +27,18 @@ router.post('/', authMiddleware, createOrder);
  * @returns {Object} - Datos de la orden.
  * @middleware authMiddleware
  */
+
+router.get('/', authMiddleware, getAllOrders);
+
+/**
+ * @route GET /api/orders/:id
+ * @description Obtener una orden por su ID.
+ * @access Privado (requiere autenticación)
+ * @param {string} req.params.id - ID de la orden.
+ * @returns {Object} - Datos de la orden.
+ * @middleware authMiddleware
+ */
+
 router.get('/:id', authMiddleware, getOrderById);
 
 /**
