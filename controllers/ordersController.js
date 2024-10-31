@@ -1,29 +1,29 @@
-import { Order, OrderDetail } from '../models/index.js';
+import { order, orderDetail } from '../models/index.js';
 
 /**
  * @desc Crea un nuevo pedido
  * @route POST /api/orders
  * @access Private
  */
-export const createOrder = async (req, res) => {
+export const createorder = async (req, res) => {
     const { items, totalPrice } = req.body;
 
     try {
-        const order = await Order.create({
-            userId: req.user.id,
-            totalPrice,
+        const order = await order.create({
+            user_id: req.user.id,
+            precio,
         });
 
         const orderItems = await Promise.all(items.map(async (item) => {
-            const product = await Product.findByPk(item.productId);
+            const product = await product.findByPk(item.productId);
             if (!product) {
-                throw new Error(`Producto con ID ${item.productId} no encontrado`);
+                throw new Error(`producto con ID ${item.productId} no encontrado`);
             }
-            return await OrderDetail.create({
-                orderId: order.id,
-                productId: item.productId,
-                quantity: item.quantity,
-                price: product.price,
+            return await orderDetail.create({
+                order_id: order.id,
+                product_id: item.productId,
+                cantidad: item.quantity,
+                precio: product.price,
             });
         }));
 
@@ -38,15 +38,15 @@ export const createOrder = async (req, res) => {
  * @route GET /api/orders
  * @access Private
  */
-export const getOrders = async (req, res) => {
+export const getorders = async (req, res) => {
     try {
-        const orders = await Order.findAll({
-            where: { userId: req.user.id },
+        const orders = await order.findAll({
+            where: { user_id: req.user.id },
             include: {
-                model: OrderDetail,
+                model: orderDetail,
                 as: 'items',
                 include: {
-                    model: Product,
+                    model: products,
                     as: 'product',
                 },
             },
@@ -62,11 +62,11 @@ export const getOrders = async (req, res) => {
  * @route PUT /api/orders/:id
  * @access Admin
  */
-export const updateOrderStatus = async (req, res) => {
+export const updateorderStatus = async (req, res) => {
     const { status } = req.body;
 
     try {
-        const order = await Order.findByPk(req.params.id);
+        const order = await order.findByPk(req.params.id);
         if (!order) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
@@ -85,9 +85,9 @@ export const updateOrderStatus = async (req, res) => {
  * @route DELETE /api/orders/:id
  * @access Admin
  */
-export const deleteOrder = async (req, res) => {
+export const deleteorder = async (req, res) => {
     try {
-        const order = await Order.findByPk(req.params.id);
+        const order = await order.findByPk(req.params.id);
         if (!order) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
@@ -104,14 +104,14 @@ export const deleteOrder = async (req, res) => {
  * @route GET /api/orders/:id
  * @access Private
  */
-export const getOrderById = async (req, res) => {
+export const getorderById = async (req, res) => {
     try {
-        const order = await Order.findByPk(req.params.id, {
+        const order = await order.findByPk(req.params.id, {
             include: {
-                model: OrderDetail,
+                model: orderDetail,
                 as: 'items',
                 include: {
-                    model: Product,
+                    model: products,
                     as: 'product',
                 },
             },

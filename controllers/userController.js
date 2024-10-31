@@ -12,7 +12,7 @@ export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        const existingUser = await Users.findOne({ where: { email } }); // Cambiado a "Users"
+        const existingUser = await user.findOne({ where: { email } }); // Cambiado a "Users"
 
         if (existingUser) {
             return res.status(400).json({ message: 'El usuario ya existe' });
@@ -73,7 +73,7 @@ export const loginUser = async (req, res) => {
  */
 export const getUserProfile = async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id); // Cambiado a "Users"
+        const user = await User.findByPk(req.user.id); 
 
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
