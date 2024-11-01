@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import { createOrder, getOrderById, updateOrderStatus, deleteOrder } from '../controllers/ordersController.js';
+import { createOrder, getOrderById, getOrders, updateOrderStatus, deleteOrder } from '../controllers/ordersController.js';
 import { authMiddleware } from '../controllers/authMiddleware.js';
 
 const router = express.Router();
@@ -28,7 +28,7 @@ router.post('/', authMiddleware, createOrder);
  * @middleware authMiddleware
  */
 
-router.get('/', authMiddleware, getAllOrders);
+router.get('/', authMiddleware, getOrders);
 
 /**
  * @route GET /api/orders/:id
