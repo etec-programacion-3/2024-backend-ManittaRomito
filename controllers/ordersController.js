@@ -1,30 +1,53 @@
-import { order, orderDetail } from '../models/index.js';
+import { Order, OrderDetail, Product } from '../models/index.js';
 
 /**
  * @desc Crea un nuevo pedido
  * @route POST /api/orders
  * @access Private
  */
-export const createorder = async (req, res) => {
-    const { items, totalPrice } = req.body;
+
+export const createOrder = async (req, res) => {
+    const { items, estado } = req.body;
+    let total = 0;
 
     try {
-        const order = await order.create({
-            user_id: req.user.id,
-            precio,
+        // Verificar que el usuario esté autenticado
+        const userId = req.user ? req.user.user_id : null;
+        if (!userId) {
+            return res.status(401).json({ message: 'Usuario no autenticado' });
+        }
+
+        // Calcular el total basado en los detalles de la orden
+        const orderItems = await Promise.all(items.map(async (item) => {
+            const product = await Product.findByPk(item.product_id);
+            if (!product) {
+                throw new Error(`Producto con ID ${item.product_id} no encontrado`);
+            }
+
+            const itemTotal = product.price * item.cantidad;
+            total += itemTotal;
+
+            // Retornar el objeto de OrderDetail con el precio de producto asignado
+            return {
+                order_id: null, // Este será actualizado una vez que la orden sea creada
+                product_id: item.product_id,
+                cantidad: item.cantidad,
+                precio: product.price  // Aseguramos que precio tenga un valor válido
+            };
+        }));
+
+        // Crear la orden con el total calculado
+        const order = await Order.create({
+            user_id: userId,
+            fecha: req.body.fecha || new Date(),
+            estado,
+            total
         });
 
-        const orderItems = await Promise.all(items.map(async (item) => {
-            const product = await product.findByPk(item.productId);
-            if (!product) {
-                throw new Error(`producto con ID ${item.productId} no encontrado`);
-            }
-            return await orderDetail.create({
-                order_id: order.id,
-                product_id: item.productId,
-                cantidad: item.quantity,
-                precio: product.price,
-            });
+        // Asignar el `order_id` a cada detalle y crear los registros en OrderDetail
+        await Promise.all(orderItems.map(async (item) => {
+            item.order_id = order.order_id; // Ahora se asigna el ID de la orden correctamente
+            await OrderDetail.create(item);
         }));
 
         res.status(201).json({ order, items: orderItems });
@@ -38,15 +61,15 @@ export const createorder = async (req, res) => {
  * @route GET /api/orders
  * @access Private
  */
-export const getorders = async (req, res) => {
+export const getOrders = async (req, res) => {
     try {
-        const orders = await order.findAll({
+        const orders = await Order.findAll({
             where: { user_id: req.user.id },
             include: {
-                model: orderDetail,
+                model: OrderDetail,
                 as: 'items',
                 include: {
-                    model: products,
+                    model: Product,
                     as: 'product',
                 },
             },
@@ -62,11 +85,11 @@ export const getorders = async (req, res) => {
  * @route PUT /api/orders/:id
  * @access Admin
  */
-export const updateorderStatus = async (req, res) => {
+export const updateOrderStatus = async (req, res) => {
     const { status } = req.body;
 
     try {
-        const order = await order.findByPk(req.params.id);
+        const order = await Order.findByPk(req.params.id);
         if (!order) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
@@ -85,9 +108,9 @@ export const updateorderStatus = async (req, res) => {
  * @route DELETE /api/orders/:id
  * @access Admin
  */
-export const deleteorder = async (req, res) => {
+export const deleteOrder = async (req, res) => {
     try {
-        const order = await order.findByPk(req.params.id);
+        const order = await Order.findByPk(req.params.id);
         if (!order) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
@@ -104,14 +127,14 @@ export const deleteorder = async (req, res) => {
  * @route GET /api/orders/:id
  * @access Private
  */
-export const getorderById = async (req, res) => {
+export const getOrderById = async (req, res) => {
     try {
-        const order = await order.findByPk(req.params.id, {
+        const order = await Order.findByPk(req.params.id, {
             include: {
-                model: orderDetail,
+                model: OrderDetail,
                 as: 'items',
                 include: {
-                    model: products,
+                    model: Product,
                     as: 'product',
                 },
             },
