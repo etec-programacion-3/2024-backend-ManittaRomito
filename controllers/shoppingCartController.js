@@ -8,7 +8,7 @@ import { ShoppingCart, CartItem, Product } from '../models/index.js';
 export const getCart = async (req, res) => {
     try {
         const cart = await ShoppingCart.findOne({
-            where: { userId: req.user.id },
+            where: { userId: req.user.userId },
             include: {
                 model: CartItem,
                 as: 'items',
@@ -38,10 +38,10 @@ export const addToCart = async (req, res) => {
     const { productId, quantity } = req.body;
 
     try {
-        let cart = await ShoppingCart.findOne({ where: { userId: req.user.id } });
+        let cart = await ShoppingCart.findOne({ where: { userId: req.user.userId } });
 
         if (!cart) {
-            cart = await ShoppingCart.create({ userId: req.user.id });
+            cart = await ShoppingCart.create({ userId: req.user.userId });
         }
 
         const product = await Product.findByPk(productId);
@@ -75,7 +75,7 @@ export const removeFromCart = async (req, res) => {
         const cartItem = await CartItem.findOne({
             where: {
                 id: req.params.id,
-                shoppingCartId: req.user.id,
+                shoppingCartId: req.user.userId,
             },
         });
 

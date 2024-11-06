@@ -11,8 +11,7 @@ export const createOrder = async (req, res) => {
     let total = 0;
 
     try {
-        // Verificar que el usuario esté autenticado
-        const userId = req.user ? req.user.user_id : null;
+        const userId = req.user ? req.user.userId : null;
         if (!userId) {
             return res.status(401).json({ message: 'Usuario no autenticado' });
         }
@@ -24,7 +23,7 @@ export const createOrder = async (req, res) => {
                 throw new Error(`Producto con ID ${item.product_id} no encontrado`);
             }
 
-            const itemTotal = product.price * item.cantidad;
+            const itemTotal = product.precio * item.cantidad;
             total += itemTotal;
 
             // Retornar el objeto de OrderDetail con el precio de producto asignado
@@ -32,7 +31,7 @@ export const createOrder = async (req, res) => {
                 order_id: null, // Este será actualizado una vez que la orden sea creada
                 product_id: item.product_id,
                 cantidad: item.cantidad,
-                precio: product.price  // Aseguramos que precio tenga un valor válido
+                precio: product.precio  // Aseguramos que precio tenga un valor válido
             };
         }));
 
@@ -64,7 +63,7 @@ export const createOrder = async (req, res) => {
 export const getOrders = async (req, res) => {
     try {
         const orders = await Order.findAll({
-            where: { user_id: req.user.id },
+            where: { user_id: req.user.userId },
             include: {
                 model: OrderDetail,
                 as: 'items',
@@ -111,6 +110,7 @@ export const updateOrderStatus = async (req, res) => {
 export const deleteOrder = async (req, res) => {
     try {
         const order = await Order.findByPk(req.params.id);
+        console.log(req.params.id)
         if (!order) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
