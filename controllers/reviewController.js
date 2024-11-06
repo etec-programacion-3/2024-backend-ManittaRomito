@@ -15,7 +15,7 @@ export const createReview = async (req, res) => {
         }
 
         const review = await Review.create({
-            userId: req.user.id,
+            userId: req.user.userId,
             productId,
             comment,
             rating,
@@ -60,7 +60,7 @@ export const deleteReview = async (req, res) => {
             return res.status(404).json({ message: 'Reseña no encontrada' });
         }
 
-        if (review.userId !== req.user.id && req.user.role !== 'admin') {
+        if (review.userId !== req.user.userId && req.user.role !== 'admin') {
             return res.status(401).json({ message: 'No autorizado' });
         }
 

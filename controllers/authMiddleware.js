@@ -12,13 +12,13 @@ export const authMiddleware = (req, res, next) => {
 
     // Verificar si no hay token
     if (!token) {
-        console.log('Token no proporcionado.'); // Log para depuración
         return res.status(401).json({ message: 'No autorizado, no se proporcionó token' });
     }
 
     try {
-        // Verificar el token
+        // Verificar el token       
         const decoded = jwt.verify(token, JWT_SECRET);
+
         req.user = decoded; // Guardar el usuario decodificado en la solicitud
         next(); // Continuar con el siguiente middleware o ruta
     } catch (error) {
