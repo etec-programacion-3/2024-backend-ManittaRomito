@@ -1,10 +1,9 @@
 /**
- * @file shoppingCartRoutes.js
+ * @file cartRoutes.js
  * @description Rutas relacionadas con el carrito de compras.
  */
-
 import express from 'express';
-import { getCart, addToCart, removeFromCart } from '../controllers/shoppingCartController.js';
+import { getCart, addToCart, updateCartItem, removeFromCart } from '../controllers/shoppingCartController.js';
 import { authMiddleware } from '../controllers/authMiddleware.js';
 
 const router = express.Router();
@@ -22,6 +21,13 @@ router.get('/', authMiddleware, getCart);
  * @access Privado
  */
 router.post('/', authMiddleware, addToCart);
+
+/**
+ * @route PUT /api/cart/:id
+ * @desc Actualiza la cantidad de un producto en el carrito
+ * @access Privado
+ */
+router.put('/:id', authMiddleware, updateCartItem);
 
 /**
  * @route DELETE /api/cart/:id

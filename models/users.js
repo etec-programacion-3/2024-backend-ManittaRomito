@@ -35,7 +35,8 @@ const User = sequelize.define('User', {
     },
     rol: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'cliente' 
     }
 }, {
     tableName: 'users',
