@@ -85,7 +85,7 @@ export const getOrders = async (req, res) => {
  * @access Admin
  */
 export const updateOrderStatus = async (req, res) => {
-    const { status } = req.body;
+    const { estado } = req.body;
 
     try {
         const order = await Order.findByPk(req.params.id);
@@ -93,7 +93,7 @@ export const updateOrderStatus = async (req, res) => {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
 
-        order.status = status;
+        order.estado = estado;
         await order.save();
 
         res.json(order);
@@ -110,7 +110,6 @@ export const updateOrderStatus = async (req, res) => {
 export const deleteOrder = async (req, res) => {
     try {
         const order = await Order.findByPk(req.params.id);
-        console.log(req.params.id)
         if (!order) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
