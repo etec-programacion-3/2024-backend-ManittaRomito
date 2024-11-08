@@ -9,7 +9,7 @@ import { User } from '../models/index.js';
  * @param {Response} res - Respuesta HTTP.
  */
 const registerUser = async (req, res) => {
-    const { nombre, email, contraseña } = req.body;
+    const { nombre, email, contraseña, rol = 'cliente', dirección, teléfono } = req.body;
 
     // Validación de campos obligatorios
     if (!nombre || !email || !contraseña) {
@@ -27,7 +27,15 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(contraseña, 10);
 
         // Crear el nuevo usuario
-        await User.create({ nombre, email, contraseña: hashedPassword, rol: 'cliente' });
+        await User.create({
+            nombre,
+            email,
+            contraseña: hashedPassword,
+            rol,
+            dirección,
+            teléfono
+        });
+
         res.status(201).json({ message: 'Usuario registrado exitosamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar usuario', error: error.message });
@@ -85,7 +93,9 @@ const getUserProfile = async (req, res) => {
                 id: user.user_id,
                 nombre: user.nombre,
                 email: user.email,
-                rol: user.rol
+                rol: user.rol,
+                dirección: user.dirección,
+                teléfono: user.teléfono
             }
         });
     } catch (error) {
