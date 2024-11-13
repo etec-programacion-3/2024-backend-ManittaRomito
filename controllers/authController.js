@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(contraseña, 10);
 
         // Crear el nuevo usuario
-        await User.create({
+        const newUser = await User.create({
             nombre,
             email,
             contraseña: hashedPassword,
@@ -36,7 +36,15 @@ const registerUser = async (req, res) => {
             teléfono
         });
 
-        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+        // Generar el token JWT
+        const token = jwt.sign({ userId: newUser.user_id, rol: newUser.rol }, JWT_SECRET, {
+            expiresIn: JWT_EXPIRES_IN
+        });
+
+        res.status(201).json({
+            message: 'Usuario registrado exitosamente',
+            token
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar usuario', error: error.message });
     }
