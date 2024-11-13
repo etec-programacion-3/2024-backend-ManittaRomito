@@ -4,6 +4,7 @@
  */
 
 import express from 'express';
+import  cors from 'cors'
 import { connectDB } from './config/db.js'; // Función para conectar a la base de datos
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -22,7 +23,7 @@ connectDB();
 
 // Middlewares
 app.use(express.json()); // Middleware para parsear cuerpos JSON
-
+app.use(cors())
 // Rutas públicas
 app.use('/api/auth', authRoutes); // Rutas de autenticación (sin middleware de autenticación)
 
