@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login } from '../controllers/authController.js'; // Importa los controladores de autenticación
+import { register, login, getUserProfile } from '../controllers/authController.js'; // Importa los controladores de autenticación
 import { authMiddleware } from '../controllers/authMiddleware.js'; // Importa el middleware de autenticación
 
 const router = express.Router();
@@ -40,9 +40,6 @@ router.use(authMiddleware);
  * @returns {object} 200 - Un objeto que contiene la información del perfil del usuario
  * @returns {object} 401 - Un objeto que indica que el usuario no está autenticado
  */
-router.get('/profile', (req, res) => {
-    res.json({ success: true, data: req.user }); // Ejemplo de respuesta
-});
+router.get('/me', authMiddleware, getUserProfile);
 
-// Exporta el router para ser utilizado en app.js
 export default router;

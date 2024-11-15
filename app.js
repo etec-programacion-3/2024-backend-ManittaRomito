@@ -9,7 +9,6 @@ import { connectDB } from './config/db.js'; // Función para conectar a la base 
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-import userRoutes from './routes/userRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
@@ -31,7 +30,6 @@ app.use('/api/auth', authRoutes); // Rutas de autenticación (sin middleware de 
 app.use(authMiddleware); // Middleware de autenticación para las siguientes rutas
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/reviews', reviewRoutes);
