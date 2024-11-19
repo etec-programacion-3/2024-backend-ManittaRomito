@@ -9,7 +9,7 @@ import { User } from '../models/index.js';
  * @param {Response} res - Respuesta HTTP.
  */
 const registerUser = async (req, res) => {
-    const { nombre, email, contraseña } = req.body;
+    const { nombre, email, contraseña, rol = 'cliente', dirección, teléfono } = req.body;
 
     // Validación de campos obligatorios
     if (!nombre || !email || !contraseña) {
@@ -27,8 +27,24 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(contraseña, 10);
 
         // Crear el nuevo usuario
-        await User.create({ nombre, email, contraseña: hashedPassword, rol: 'cliente' });
-        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+        const newUser = await User.create({
+            nombre,
+            email,
+            contraseña: hashedPassword,
+            rol,
+            dirección,
+            teléfono
+        });
+
+        // Generar el token JWT
+        const token = jwt.sign({ userId: newUser.user_id, rol: newUser.rol }, JWT_SECRET, {
+            expiresIn: JWT_EXPIRES_IN
+        });
+
+        res.status(201).json({
+            message: 'Usuario registrado exitosamente',
+            token
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar usuario', error: error.message });
     }
@@ -42,27 +58,45 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, contraseña } = req.body;
 
-    // Validación de campos obligatorios
     if (!email || !contraseña) {
-        return res.status(400).json({ message: 'Faltan datos obligatorios: email y contraseña' });
+        return res.status(400).json({ 
+            success: false,
+            message: 'Faltan datos obligatorios: email y contraseña' 
+        });
     }
 
     try {
-        // Buscar al usuario por email
         const user = await User.findOne({ where: { email } });
 
         if (!user || !(await bcrypt.compare(contraseña, user.contraseña))) {
-            return res.status(401).json({ message: 'Credenciales inválidas' });
+            return res.status(401).json({ 
+                success: false,
+                message: 'Credenciales inválidas' 
+            });
         }
 
-        // Generar el token JWT
-        const token = jwt.sign({ userId: user.user_id, rol: user.rol }, JWT_SECRET, {
-            expiresIn: JWT_EXPIRES_IN
-        });
+        const token = jwt.sign(
+            { userId: user.user_id, rol: user.rol }, 
+            JWT_SECRET, 
+            { expiresIn: JWT_EXPIRES_IN }
+        );
 
-        res.status(200).json({ token });
+        res.status(200).json({
+            success: true,
+            token,
+            user: {
+                id: user.user_id,
+                nombre: user.nombre,
+                email: user.email,
+                rol: user.rol
+            }
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al iniciar sesión', error: error.message });
+        res.status(500).json({ 
+            success: false,
+            message: 'Error al iniciar sesión', 
+            error: error.message 
+        });
     }
 };
 
@@ -85,7 +119,9 @@ const getUserProfile = async (req, res) => {
                 id: user.user_id,
                 nombre: user.nombre,
                 email: user.email,
-                rol: user.rol
+                rol: user.rol,
+                dirección: user.dirección,
+                teléfono: user.teléfono
             }
         });
     } catch (error) {
