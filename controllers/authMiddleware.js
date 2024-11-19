@@ -8,21 +8,34 @@ import { JWT_SECRET } from '../config/dotenv.js';
  * @param {Function} next - Siguiente middleware.
  */
 export const authMiddleware = (req, res, next) => {
-    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-    // Verificar si no hay token
-    if (!token) {
-        return res.status(401).json({ message: 'No autorizado, no se proporcionó token' });
+    // Permitir GET requests a /products sin autenticación
+    if (req.method === 'GET' && (req.path === '/products' || req.originalUrl === '/api/products')) {
+        return next();
     }
 
     try {
-        // Verificar el token       
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'No se proporcionó token de autorización' 
+            });
+        }
 
-        req.user = decoded; // Guardar el usuario decodificado en la solicitud
-        next(); // Continuar con el siguiente middleware o ruta
+        const token = authHeader.startsWith('Bearer ') 
+            ? authHeader.slice(7) 
+            : authHeader;
+
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
     } catch (error) {
-        console.error('Error al verificar el token:', error.message); // Log del error
-        return res.status(401).json({ message: 'Token no válido', error: error.message });
+        console.error('Error en authMiddleware:', error);
+        return res.status(401).json({
+            success: false,
+            message: 'Token inválido o expirado',
+            error: error.message
+        });
     }
 };
