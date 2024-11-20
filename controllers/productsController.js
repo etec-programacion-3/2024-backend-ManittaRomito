@@ -7,9 +7,7 @@ import { Product } from '../models/index.js';
  */
 export const getAllProducts = async (req, res) => {
     try {
-        console.log('Obteniendo productos...');
         const products = await Product.findAll();
-        console.log('Productos encontrados:', products.length);
         res.status(200).json(products);
     } catch (error) {
         console.error('Error al obtener productos:', error);
