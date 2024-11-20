@@ -27,11 +27,6 @@ router.post('/register', register);
 router.post('/login', login);
 
 /**
- * Middleware de autenticación aplicado a las rutas que requieren que el usuario esté autenticado
- */
-router.use(authMiddleware);
-
-/**
  * @route GET /api/auth/profile
  * @desc Obtiene el perfil del usuario autenticado
  * @access Private
@@ -40,6 +35,6 @@ router.use(authMiddleware);
  * @returns {object} 200 - Un objeto que contiene la información del perfil del usuario
  * @returns {object} 401 - Un objeto que indica que el usuario no está autenticado
  */
-router.get('/me', authMiddleware, getUserProfile);
+router.get('/profile', authMiddleware, getUserProfile);
 
 export default router;

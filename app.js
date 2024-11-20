@@ -38,6 +38,11 @@ app.use('/api/categories', authMiddleware, categoryRoutes);
 app.use('/api/cart', authMiddleware, cartRoutes);
 app.use('/api/reviews', authMiddleware, reviewRoutes);
 
+// Agregar esta ruta de prueba
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'API funcionando correctamente' });
+});
+
 // Middleware de manejo de errores
 app.use(errorHandler);
 
