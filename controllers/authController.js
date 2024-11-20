@@ -58,27 +58,41 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, contraseña } = req.body;
 
-    // Validación de campos obligatorios
-    if (!email || !contraseña) {
-        return res.status(400).json({ message: 'Faltan datos obligatorios: email y contraseña' });
-    }
-
     try {
-        // Buscar al usuario por email
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ 
+            where: { email },
+            attributes: ['user_id', 'nombre', 'email', 'contraseña', 'rol']
+        });
 
         if (!user || !(await bcrypt.compare(contraseña, user.contraseña))) {
             return res.status(401).json({ message: 'Credenciales inválidas' });
         }
 
-        // Generar el token JWT
-        const token = jwt.sign({ userId: user.user_id, rol: user.rol }, JWT_SECRET, {
-            expiresIn: JWT_EXPIRES_IN
+        const token = jwt.sign(
+            { userId: user.user_id, rol: user.rol }, 
+            JWT_SECRET, 
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+
+        // Asegurarse de que todos los campos requeridos estén presentes
+        const userData = {
+            id: user.user_id,
+            nombre: user.nombre,
+            email: user.email,
+            rol: user.rol
+        };
+        
+        res.status(200).json({
+            token,
+            user: userData
         });
 
-        res.status(200).json({ token });
     } catch (error) {
-        res.status(500).json({ message: 'Error al iniciar sesión', error: error.message });
+        console.error('Error en login:', error);
+        res.status(500).json({ 
+            message: 'Error al iniciar sesión', 
+            error: error.message 
+        });
     }
 };
 
@@ -97,21 +111,17 @@ const getUserProfile = async (req, res) => {
         }
 
         res.status(200).json({
-            user: {
-                id: user.user_id,
-                nombre: user.nombre,
-                email: user.email,
-                rol: user.rol,
-                dirección: user.dirección,
-                teléfono: user.teléfono
-            }
+            id: user.user_id,
+            nombre: user.nombre,
+            email: user.email,
+            rol: user.rol
         });
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el perfil del usuario', error: error.message });
     }
 };
 
-// Exportar las funciones del controlador
+// Exportar todas las funciones juntas al final del archivo
 export {
     registerUser as register,
     loginUser as login,
