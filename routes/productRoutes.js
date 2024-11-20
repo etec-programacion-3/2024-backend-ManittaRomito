@@ -1,8 +1,3 @@
-/**
- * @file productRoutes.js
- * @description Rutas relacionadas con la gestión de productos.
- */
-
 import express from 'express';
 import { createProduct, updateProduct, deleteProduct } from '../controllers/productsController.js';
 

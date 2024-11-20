@@ -1,8 +1,3 @@
-/**
- * @file app.js
- * @description Configuración de la aplicación y rutas principales.
- */
-
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/db.js';
@@ -37,7 +32,7 @@ app.use('/api/auth', authRoutes);
 app.get('/api/products', getAllProducts);
 
 // Middleware de autenticación para rutas protegidas
-app.use('/api/products', authMiddleware, productRoutes);
+app.use('/api/products', authMiddleware, productRoutes); // Cambio aquí
 app.use('/api/orders', authMiddleware, orderRoutes);
 app.use('/api/categories', authMiddleware, categoryRoutes);
 app.use('/api/cart', authMiddleware, cartRoutes);
