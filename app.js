@@ -37,16 +37,11 @@ app.use('/api/auth', authRoutes);
 app.get('/api/products', getAllProducts);
 
 // Middleware de autenticación para rutas protegidas
-app.use(authMiddleware);
-
-// Rutas protegidas
-app.post('/api/products', productRoutes);
-app.put('/api/products/:id', productRoutes);
-app.delete('/api/products/:id', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use('/api/products', authMiddleware, productRoutes);
+app.use('/api/orders', authMiddleware, orderRoutes);
+app.use('/api/categories', authMiddleware, categoryRoutes);
+app.use('/api/cart', authMiddleware, cartRoutes);
+app.use('/api/reviews', authMiddleware, reviewRoutes);
 
 // Middleware de manejo de errores
 app.use(errorHandler);
